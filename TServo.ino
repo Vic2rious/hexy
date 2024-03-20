@@ -39,13 +39,14 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 #define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates
 
 // our servo # counter
-uint8_t servonum = 2;
+uint8_t servonum = 0;
 
 void setup() {
   Serial.begin(9600);
   Serial.println("8 channel Servo test!");
 
   pwm.begin();
+  Serial.println("pwm started");
   /*
    * In theory the internal oscillator (clock) is 25MHz but it really isn't
    * that precise. You can 'calibrate' this by tweaking this number until
@@ -116,5 +117,5 @@ void loop() {
 //  delay(500);
 
   servonum++;
-  if (servonum > 7) servonum = 0; // Testing the first 8 servo channels
+  if (servonum > 4) servonum = 0; // Testing the first 8 servo channels
 }
