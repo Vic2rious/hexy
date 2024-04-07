@@ -14,7 +14,6 @@ This project as a whole has been heavily inspired by [MarkWTech](https://markwte
 
 ## Images
 
-![Placeholder](https://drive.google.com/file/d/1uj2t6krLzMCa0tRN0HGahrBUHa3hNLyq/view?usp=sharing)
 ![Placeholder](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
 ![Placeholder](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
 
