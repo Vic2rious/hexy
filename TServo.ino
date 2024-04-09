@@ -23,7 +23,7 @@
 // called this way, it uses the default address 0x40
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 // you can also call it with a different address you want
-//Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x41);
+Adafruit_PWMServoDriver pwm1 = Adafruit_PWMServoDriver(0x41);
 // you can also call it with a different address and I2C interface
 //Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x40, Wire);
 
@@ -46,6 +46,7 @@ void setup() {
   Serial.println("8 channel Servo test!");
 
   pwm.begin();
+  pwm1.begin();
   Serial.println("pwm started");
   /*
    * In theory the internal oscillator (clock) is 25MHz but it really isn't
@@ -65,6 +66,9 @@ void setup() {
    */
   pwm.setOscillatorFrequency(27000000);
   pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
+  
+  pwm1.setOscillatorFrequency(27000000);
+  pwm1.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
 
   delay(2);
 }
@@ -94,6 +98,7 @@ void loop() {
 
   delay(500);
   pwm.setPWM(servonum, 0, SERVOMID);
+  pwm1.setPWM(servonum, 0, SERVOMID);
   
   delay(500);
   
