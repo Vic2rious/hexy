@@ -8,9 +8,11 @@
 #define SERVOMIN  150 // Minimum pulse length count (out of 4096)
 #define SERVOMAX  600 // Maximum pulse length count (out of 4096)
 #define SERVO_FREQ 50 // Analog servos run at ~50 Hz updates
-Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
-const int legCount = 1;
+Adafruit_PWMServoDriver pwm1 = Adafruit_PWMServoDriver();
+Adafruit_PWMServoDriver pwm2 = Adafruit_PWMServoDriver(0x41);
+
+const int legCount = 6;
 const int jointCount = 3;
 
 bool ik = true;
@@ -23,14 +25,16 @@ class Joint {
 public:
     uint8_t channel;
     int offset;
+    Adafruit_PWMServoDriver pwm;
 
-    Joint(uint8_t channel, int offset) {
+    Joint(uint8_t channel, int offset,Adafruit_PWMServoDriver pwm ) {
         this->channel = channel;
         this->offset = offset;
+        this-> pwm = pwm;
     }
 void setAngle(int angle) {
         constrain(angle, 0, 180);  
-        uint16_t pulse = map(angle, 0, 180, SERVOMIN, SERVOMAX); //servotata ni sa do 120 gradusa. 
+        uint16_t pulse = map(angle, 0, 180, SERVOMIN, SERVOMAX); 
         pwm.setPWM(channel, 0, pulse);
     }
     
@@ -47,46 +51,50 @@ const int tibiaLength = 121;
 
 bool led = true;
 
-Joint L1_coxa(0, coxaOffset);
-Joint L1_femur(1, femurOffset);
-Joint L1_tibia(2, 0);
+Joint L1_coxa(0, coxaOffset,pwm1);
+Joint L1_femur(1, femurOffset,pwm1);
+Joint L1_tibia(2, 0,pwm1);
 
-Joint L2_coxa(3, coxaOffset);
-Joint L2_femur(4, femurOffset);
-Joint L2_tibia(5, 0);
+Joint L2_coxa(3, coxaOffset,pwm1);
+Joint L2_femur(4, femurOffset,pwm1);
+Joint L2_tibia(5, 0,pwm1);
 
-Joint L3_coxa(6, coxaOffset);
-Joint L3_femur(7, femurOffset);
-Joint L3_tibia(8, 0);
+Joint L3_coxa(6, coxaOffset,pwm1);
+Joint L3_femur(7, femurOffset,pwm1);
+Joint L3_tibia(8, 0,pwm1);
 
-Joint L4_coxa(9, coxaOffset);
-Joint L4_femur(10, femurOffset);
-Joint L4_tibia(11, 0);
+Joint L4_coxa(9, coxaOffset,pwm1);
+Joint L4_femur(10, femurOffset,pwm1);
+Joint L4_tibia(11, 0,pwm1);
 
-Joint L5_coxa(12, coxaOffset);
-Joint L5_femur(13, femurOffset);
-Joint L5_tibia(14, 0);
+Joint L5_coxa(0, coxaOffset,pwm2);
+Joint L5_femur(1, femurOffset,pwm2);
+Joint L5_tibia(2, 0,pwm2);
 
-Joint L6_coxa(15, coxaOffset);
-Joint L6_femur(16, femurOffset);
-Joint L6_tibia(17, 0);
+Joint L6_coxa(3, coxaOffset,pwm2);
+Joint L6_femur(4, femurOffset,pwm2);
+Joint L6_tibia(5, 0,pwm2);
 
 const Joint coxas[6] = {L1_coxa,L2_coxa,L3_coxa,L4_coxa,L5_coxa,L6_coxa};
 const Joint femurs[6] = {L1_femur,L2_femur,L3_femur,L4_femur,L5_femur,L6_femur};
 const Joint tibias[6] = {L1_tibia,L2_tibia,L3_tibia,L4_tibia,L5_tibia,L6_tibia};
 int xy [2];
 
-
 void setup() {
 
   Serial.begin(9600);
   pinMode(LED_BUILTIN , OUTPUT);
-  pwm.begin();
-  pwm.setPWMFreq(SERVO_FREQ);
- // resetLegPositions();
- L1_coxa.setAngle(90);
- L1_femur.setAngle(90);
- L1_tibia.setAngle(90);
+
+  pwm1.begin();
+  pwm2.begin();
+
+  pwm1.setOscillatorFrequency(27000000);
+  pwm1.setPWMFreq(SERVO_FREQ);
+
+  pwm2.setOscillatorFrequency(27000000);
+  pwm2.setPWMFreq(SERVO_FREQ);
+
+ resetLegPositions();
 }
 
 void resetLegPositions(){
@@ -99,6 +107,8 @@ void resetLegPositions(){
     femurs[i].setAngle(90-femurs[i].offset);
     delay(100);
     tibias[i].setAngle(130);
+
+    
   }
 }
 
@@ -122,7 +132,7 @@ void loop() {
       tripodGaitBrute();
     }
   //forwardKinematics();
-  delay(50);
+  delay(500);
 
 }
 }
