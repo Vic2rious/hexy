@@ -68,8 +68,8 @@ namespace DS4Sender
                     float normalizedX = leftStickX / 32767f;
                     float normalizedY = leftStickY / 32767f;
 
-                    double xPos = Math.Round(-normalizedX * 100,MidpointRounding.AwayFromZero);
-                    double yPos = Math.Round(normalizedY * 100, MidpointRounding.AwayFromZero);
+                    double xPos = Math.Round(-normalizedX * 50,MidpointRounding.AwayFromZero);
+                    double yPos = Math.Round(normalizedY * 50, MidpointRounding.AwayFromZero);
                     //Y = forward / backward
                     // X = left / right
                     // Z does not exist here, since we do not controll the height of the hexapod. (For now, at least)f
