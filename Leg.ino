@@ -19,8 +19,6 @@ bool ik = true;
 
 double theta1,theta2,theta3;
 
-double angles[] = {0,0,0};
-
 class Joint {
 public:
     uint8_t channel;
@@ -78,12 +76,11 @@ Joint L6_tibia(5, 0,pwm2);
 const Joint coxas[6] = {L1_coxa,L2_coxa,L3_coxa,L4_coxa,L5_coxa,L6_coxa};
 const Joint femurs[6] = {L1_femur,L2_femur,L3_femur,L4_femur,L5_femur,L6_femur};
 const Joint tibias[6] = {L1_tibia,L2_tibia,L3_tibia,L4_tibia,L5_tibia,L6_tibia};
-int xy [2];
+int xyValues [2];
 
 void setup() {
 
   Serial.begin(9600);
-  pinMode(LED_BUILTIN , OUTPUT);
 
   pwm1.begin();
   pwm2.begin();
@@ -121,7 +118,7 @@ void loop() {
     int i = 0;
 
     while(ptr!=NULL && i<3){
-      xy  [i++] = atoi(ptr);
+      xyValues  [i++] = atoi(ptr);
       ptr = strtok(NULL,",");
     }
 
@@ -139,6 +136,7 @@ void loop() {
 
 void inverseKinematics(int x, int y, int z){
    theta1 = atan2(y,x); // Basic trig (tan = opp/adj)
+
 
   double xA = coxaLength*cos(theta1);
   double yA = coxaLength*sin(theta1);
@@ -194,13 +192,49 @@ void tripodGaitIK(){
   Joint phase2Tibias[3] = {L2_tibia,L4_tibia,L6_tibia};
 
 
-  for(int i = 0; i<6;i++){
-      inverseKinematics(xy[0],xy[1],20);//The last value is Z which is equal to the amount of mm our legs will be lifted
-      L1_coxa.setAngle(theta1);
-      L1_femur.setAngle(theta2);
-      L1_tibia.setAngle(theta3);
+ 
+      inverseKinematics(xyValues[0],xyValues[1],20);//The last value is Z which is equal to the amount of mm our legs will be lifted
+      for(int i= 0; i<jointCount;i++){
+        if(isOnTheLeft(phase1Coxas[i])
+        phase1Coxas[i].setAngle(180-theta1);
+        else phase1Coxas[i].SetAngle(theta1);
+
+        phase1Femurs[i].setAngle(theta2);
+        phase1Tibias[i].SetAngle(theta3);
+      }
+      delay(150);
+      inverseKinematics(0,0,-20);
+      for(int i= 0; i<jointCount;i++){
+        if(isOnTheLeft(phase1Coxas[i])
+        phase1Coxas[i].setAngle(180-theta1);
+        else phase1Coxas[i].SetAngle(theta1);
+
+        phase1Femurs[i].setAngle(theta2);
+        phase1Tibias[i].SetAngle(theta3);
+      }
+inverseKinematics(xyValues[0],xyValues[1],20);//The last value is Z which is equal to the amount of mm our legs will be lifted
+      for(int i= 0; i<jointCount;i++){
+        if(isOnTheLeft(phase2Coxas[i])
+        phase2Coxas[i].setAngle(180-theta1);
+        else phase2Coxas[i].SetAngle(theta1);
+
+        phase2Femurs[i].setAngle(theta2);
+        phase2Tibias[i].SetAngle(theta3);
+      }
+
+      inverseKinematics(0,0,-20);//The last value is Z which is equal to the amount of mm our legs will be lifted
+      for(int i= 0; i<jointCount;i++){
+        if(isOnTheLeft(phase2Coxas[i])
+        phase2Coxas[i].setAngle(180-theta1);
+        else phase2Coxas[i].SetAngle(theta1);
+
+        phase2Femurs[i].setAngle(theta2);
+        phase2Tibias[i].SetAngle(theta3);
+      }
+
+
     }
-  }
+  
 
 void tripodGaitBrute(){
 
@@ -213,8 +247,8 @@ void tripodGaitBrute(){
   Joint phase2Tibias[3] = {L2_tibia,L4_tibia,L6_tibia};
 
   
-  int x = xy[0];
-  int y = xy[1];
+  int x = xyValues[0];
+  int y = xyValues[1];
   if (x == 0) {
     if (y > 0) {
       //FOrward
@@ -277,7 +311,7 @@ bool isOnTheLeft(Joint joint){
                               L6_coxa,L6_femur,L6_tibia};
 
   for(int i =0; i<9;i++){
-  if(joint.channel == leftSidedJoints[i].channel)
+  if(joint.channel == leftSidedJoints[i].channel && joint.pwm == leftSidedJoints[i].pwm)
   return true;
   }
   return false;
