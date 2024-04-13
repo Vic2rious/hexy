@@ -3,7 +3,7 @@ using System.IO.Ports;
 using SharpDX.XInput;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.IO.Ports;
+using System.Diagnostics;
 
 namespace DS4Sender
 {
@@ -11,8 +11,9 @@ namespace DS4Sender
     {
         bool isTracking = false;
         Controller ds4 = new Controller(UserIndex.One);
-       SerialPort serialPort = new SerialPort("COM4", 9600); // com4 = serial port where arduino is connected
+        SerialPort serialPort = new SerialPort("COM4", 9600); // com4 = serial port where arduino is connected
         
+      
 
         public Form1()
         {
@@ -60,7 +61,7 @@ namespace DS4Sender
                         startButton.Text = "Start Joystick Tracking";
                         isTracking = false;
                     }
-                        
+
 
                     float leftStickX = state.Gamepad.LeftThumbX;
                     float leftStickY = state.Gamepad.LeftThumbY;
@@ -68,16 +69,17 @@ namespace DS4Sender
                     float normalizedX = leftStickX / 32767f;
                     float normalizedY = leftStickY / 32767f;
 
-                    double xPos = Math.Round(-normalizedX * 50,MidpointRounding.AwayFromZero);
+                    double xPos = Math.Round(-normalizedX * 50, MidpointRounding.AwayFromZero);
                     double yPos = Math.Round(normalizedY * 50, MidpointRounding.AwayFromZero);
                     //Y = forward / backward
                     // X = left / right
                     // Z does not exist here, since we do not controll the height of the hexapod. (For now, at least)f
 
 
-                    Console.WriteLine(xPos);
-                    serialPort.WriteLine($"{xPos},{yPos}");
-                    Thread.Sleep(1000);
+                    Debug.WriteLine(yPos);
+                    //label2.Text = xPos.ToString();
+                    serialPort.WriteLine(yPos.ToString());
+                    Thread.Sleep(100);
                 }
             }
 
