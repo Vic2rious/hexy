@@ -14,6 +14,6 @@ This project as a whole has been heavily inspired by [MarkWTech](https://markwte
 
 ## Images
 
-![Placeholder](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-![Placeholder](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![Robot](https://github.com/Vic2rious/hexy/blob/fd274646a8753576fb9c5121ea3041829c202a61/IMG_1521.jpg)
+![Electronics](https://github.com/Vic2rious/hexy/blob/fd274646a8753576fb9c5121ea3041829c202a61/IMG_1522.jpg)
 
